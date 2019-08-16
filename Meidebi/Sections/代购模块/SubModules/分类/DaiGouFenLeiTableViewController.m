@@ -26,7 +26,9 @@
 
 #import "GoodsCarViewController.h"
 
-@interface DaiGouFenLeiTableViewController ()<DaiGouHomeTableViewCellDelegate,SelectColorAndSizeViewDelegate>
+#import "TKExploreSearchWriteView.h"
+
+@interface DaiGouFenLeiTableViewController ()<DaiGouHomeTableViewCellDelegate,SelectColorAndSizeViewDelegate,UITextFieldDelegate>
 {
     JinRiPinDanListDataController *dataControl;
     int ipage;
@@ -38,6 +40,10 @@
     
     SelectColorAndSizeView *ggView;
     NSString *strdaigaouid;
+    
+    UIView *viewtitle;
+    UITextField *fieldsearch;
+    
 }
 
 @property (nonatomic , retain)MDBEmptyView *emptyView;
@@ -62,6 +68,7 @@
     if([_strtitle isEqualToString:@"现货"])
     {
         [self setNavigation];
+        self.title = @"";
     }
     
 }
@@ -96,6 +103,47 @@
     
     self.navigationItem.rightBarButtonItems = @[rightBarButtonItem];
     
+    
+    
+    viewtitle = [[UIView alloc]initWithFrame:CGRectMake(50, 5, self.view.width-110, 34)];
+    [viewtitle setBackgroundColor:RGB(233, 233, 233)];
+    [viewtitle.layer setMasksToBounds:YES];
+    [viewtitle.layer setCornerRadius:viewtitle.height/2.0];
+    [self.navigationController.navigationBar addSubview:viewtitle];
+    [self.navigationController.navigationBar bringSubviewToFront:viewtitle];
+    
+    fieldsearch = [[UITextField alloc]initWithFrame:CGRectMake(15, 0, viewtitle.width-30, viewtitle.height)];
+    [fieldsearch setText:@""];
+    [fieldsearch setPlaceholder:@"现货搜一下看看~"];
+    [fieldsearch setTextColor:RGB(30, 30, 30)];
+    [fieldsearch setTextAlignment:NSTextAlignmentLeft];
+    [fieldsearch setFont:[UIFont systemFontOfSize:14]];
+    [fieldsearch setReturnKeyType:UIReturnKeySearch];
+    [fieldsearch setDelegate:self];
+    [viewtitle addSubview:fieldsearch];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [viewtitle setHidden:NO];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [viewtitle setHidden:YES];
+    [fieldsearch resignFirstResponder];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if([string isEqualToString:@"\n"])
+    {
+        
+    }
+    
+    return YES;
 }
 
 -(void)rightanvAction
@@ -198,6 +246,10 @@
 }
 
 #pragma mark - UITableView
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [fieldsearch resignFirstResponder];
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return arrlistData.count;

@@ -12,7 +12,11 @@
 
 #import "MyAccountDataController.h"
 
-@interface MyAccountCashWView ()<UITextFieldDelegate>
+#import "MDBPayAlterView.h"
+
+#import "PayPassWordViewController.h"
+
+@interface MyAccountCashWView ()<UITextFieldDelegate,MDBPayAlterViewDelegate,UIAlertViewDelegate>
 {
     UILabel *lbprice;
     
@@ -459,9 +463,27 @@
     [fieldMoney setText:[NSString stringWithFormat:@"%.2lf",fktxmoney]];
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex==1)
+    {
+        PayPassWordViewController *pvc = [[PayPassWordViewController alloc] init];
+        [self.viewController.navigationController pushViewController:pvc animated:YES];
+    }
+}
+
+
 #pragma mark - 提现
 -(void)tixianAction
 {
+    
+    if([[MDB_UserDefault defaultInstance] is_set_pay_password]==NO)
+    {
+        UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请设置支付密码" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+        [alter show];
+        return;
+    }
+    
     if(fieldMoney.text.floatValue<0.01)
     {
         [MDB_UserDefault showNotifyHUDwithtext:@"请输入正确的金额" inView:self];
@@ -478,17 +500,33 @@
         return;
     }
     
+    MDBPayAlterView *alter = [[MDBPayAlterView alloc] init];
+    alter.strPrice = @"1.00";
+    [alter setDelegate:self];
+    [alter alterShow:self.window type:0 andfv:0.10];
     
     
+    
+}
+
+///取消
+-(void)cancleAction;
+{
+    
+}
+///输入完成
+-(void)passAllCode:(NSString *)strvalue
+{
     NSDictionary *dicpush = @{@"userkey":[NSString nullToString:[MDB_UserDefault defaultInstance].usertoken],
                               @"tx_channel":@"alipay",
                               @"money":[NSString stringWithFormat:@"%.2lf",fieldMoney.text.floatValue],
                               @"account":[NSString nullToString:fieldaccount.text],
-                              @"real_name":[NSString nullToString:fieldname.text]
-                              };
+                              @"real_name":[NSString nullToString:fieldname.text],
+                              @"pay_password":strvalue};
     [dataControl requestTiXianActionDataInView:self dicpush:dicpush Callback:^(NSError *error, BOOL state, NSString *describle) {
         if(state)
         {
+            [fieldMoney setText:@""];
             [MDB_UserDefault showNotifyHUDwithtext:@"提现申请成功" inView:self];
             [self loadData];
         }
@@ -497,9 +535,6 @@
             [MDB_UserDefault showNotifyHUDwithtext:describle inView:self];
         }
     }];
-    
-    
-    
 }
 
 

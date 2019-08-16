@@ -725,5 +725,16 @@ typedef NS_ENUM(NSInteger,RegCodeType) {
 #define URL_Popularize_Last_Tixian_Success_Info [NSString stringWithFormat:@"%@v2-popularize-last_tixian_success_info",URL_HR]
 
 
+///余额支付
+#define URL_Daigoupayment_Balancepay [NSString stringWithFormat:@"%@v2-daigoupayment-balancepay",URL_HR]
 
+///修改支付密码
+#define URL_AccountSecurity_update_pay_password [NSString stringWithFormat:@"%@v2-AccountSecurity-update_pay_password",URL_HR]
+
+
+///创建支付密码
+#define URL_AccountSecurity_create_pay_password [NSString stringWithFormat:@"%@v2-AccountSecurity-create_pay_password",URL_HR]
+
+///提现规则说明
+#define URL_Popularize_tixian_rule [NSString stringWithFormat:@"%@v2-popularize-tixian_rule",URL_HR]
 

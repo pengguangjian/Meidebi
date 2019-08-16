@@ -56,6 +56,8 @@ typedef NS_ENUM(NSInteger, attendanceStatus) {
 @property (nonatomic, strong, readonly) NSString *commission_balance;
 ///未使用商品券余额
 @property (nonatomic, strong, readonly) NSString *goods_coupon_balance;
+///是否已设置支付密码
+@property (nonatomic,assign,readonly)   BOOL is_set_pay_password;
 
 @property (nonatomic,assign,readonly)   BOOL       isOn;
 @property (nonatomic,assign,readonly)   BOOL       userIsPhoto;
@@ -72,7 +74,7 @@ typedef NS_ENUM(NSInteger, attendanceStatus) {
 - (void)setUserWithDic:(NSDictionary *)dic token:(NSString *)token;
 - (void)setUserNil;
 + (BOOL)getIsLogin;
-- (void)setisSignyes:(NSString *)isSign coper:(NSString *)coper name:(NSString *)name nickName:(NSString *)nickName coin:(NSString *)coin fans:(NSString *)fans follow:(NSString *)follow contribution:(NSString *)contribution content:(NSString *)contet userPhoto:(NSString *)photoLink userID:(NSString *)userID balance:(NSString *)balance commission_balance:(NSString *)commission_balance goods_coupon_balance:(NSString *)goods_coupon_balance;
+- (void)setisSignyes:(NSString *)isSign coper:(NSString *)coper name:(NSString *)name nickName:(NSString *)nickName coin:(NSString *)coin fans:(NSString *)fans follow:(NSString *)follow contribution:(NSString *)contribution content:(NSString *)contet userPhoto:(NSString *)photoLink userID:(NSString *)userID balance:(NSString *)balance commission_balance:(NSString *)commission_balance goods_coupon_balance:(NSString *)goods_coupon_balance is_set_pay_password:(BOOL)is_set_pay_password;
 - (void)setUserPhoto:(NSString *)userPhoto;
 - (void)setUserName:(NSString *)userName;
 - (BOOL)getisSign;

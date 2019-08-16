@@ -46,8 +46,6 @@
         }else{
             NSString *str=[[NSString alloc]initWithData:responceObjct encoding:NSUTF8StringEncoding];
             NSDictionary *dicAll=[str JSONValue];
-            NSLog(@"开始");
-            NSLog(@"%@",str);
             describle = dicAll[@"info"];
             if ([[NSString nullToString:dicAll[@"status"]] intValue] == 1) {
                 self.dictixian=[dicAll objectForKey:@"data"];

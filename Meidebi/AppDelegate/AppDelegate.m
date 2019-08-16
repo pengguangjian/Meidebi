@@ -161,7 +161,51 @@ static NSString * const kAliFeedbackAppKey = @"23342874";
         }
     }];
     
+    //iOS10必须加下面这段代码。
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    center.delegate=self;
+    UNAuthorizationOptions types10 = UNAuthorizationOptionBadge|UNAuthorizationOptionAlert|UNAuthorizationOptionSound;
+    [center requestAuthorizationWithOptions:types10 completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        if (granted) {
+            //点击允许
+        } else {
+            //点击不允许
+        }
+    }];
     
+    // taobao
+    [[AlibcTradeSDK sharedInstance] setEnv:AlibcEnvironmentRelease];
+    // 百川平台基础SDK初始化，加载并初始化各个业务能力插件
+    [[AlibcTradeSDK sharedInstance] asyncInitWithSuccess:^{
+    } failure:^(NSError *error) {
+        // NSLog(@"Init failed: %@", error.description);
+    }];
+    // 设置全局的app标识，在电商模块里等同于isv_code
+    [[AlibcTradeSDK sharedInstance] setISVCode:@"com.meidebi.iPhone"];
+    // 设置全局配置，是否强制使用h5
+    [[AlibcTradeSDK sharedInstance] setIsForceH5:NO];
+    // 开发阶段打开日志开关，方便排查错误信息
+    // [[AlibcTradeSDK sharedInstance] setDebugLogOpen:YES];
+    // talkingData
+    [TalkingData setExceptionReportEnabled:YES];
+    [TalkingData sessionStarted:kTalkingDataAppKey withChannelId:@"app store"];
+    
+    
+    
+    ///京东
+    [[KeplerApiManager sharedKPService]asyncInitSdk:jd_app_key secretKey:jd_app_secret sucessCallback:^(){
+    }failedCallback:^(NSError *error){
+    }];
+    
+    
+    
+    [self loadHTTPCookies];
+    [self AuthshareSDKSetting];
+    
+    [self VersonUpdate];
+    
+    
+    /*
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
             
@@ -215,7 +259,7 @@ static NSString * const kAliFeedbackAppKey = @"23342874";
             
         });
     });
-    
+    */
     
 
 //    [self setupBugly];

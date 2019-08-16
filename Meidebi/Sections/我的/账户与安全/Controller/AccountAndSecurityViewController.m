@@ -12,6 +12,8 @@
 #import "ChangePasswordPhoneViewController.h"
 #import "ChangePhoneOldViewController.h"
 
+#import "PayPassWordViewController.h"
+
 #import "MDB_UserDefault.h"
 
 @interface AccountAndSecurityViewController ()<UITableViewDelegate,UITableViewDataSource>
@@ -39,11 +41,11 @@
     
     if([[MDB_UserDefault defaultInstance] telphone].length != 11)
     {
-        arrdata = @[@"修改密码"];
+        arrdata = @[@"修改密码",@"提现/支付密码"];
     }
     else
     {
-        arrdata = @[@"修改密码",@"修改手机号"];
+        arrdata = @[@"修改密码",@"提现/支付密码",@"修改手机号"];
     }
     
     
@@ -93,6 +95,12 @@
     }
     else if (indexPath.row == 1)
     {
+        cell.textLabel.text = @"提现/支付密码";
+//        cell.detailTextLabel.text = @"修改提现/支付密码";
+//        cell.detailTextLabel.textColor = [UIColor colorWithHexString:@"#999999"];
+    }
+    else if (indexPath.row == 2)
+    {
         cell.textLabel.text = @"修改手机号";
         cell.detailTextLabel.text = @"若手机更换请尽快更改";
         cell.detailTextLabel.textColor = [UIColor colorWithHexString:@"#999999"];
@@ -139,6 +147,11 @@
         
     }
     else if (indexPath.row == 1)
+    {
+        PayPassWordViewController *pvc = [[PayPassWordViewController alloc] init];
+        [self.navigationController pushViewController:pvc animated:YES];
+    }
+    else if (indexPath.row == 2)
     {
         if([[MDB_UserDefault defaultInstance] telphone].length == 11)
         {

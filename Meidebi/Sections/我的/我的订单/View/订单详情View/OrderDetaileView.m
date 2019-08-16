@@ -1328,9 +1328,13 @@
     {
         [lbother setText:@"支付宝"];
     }
-    else
+    else if(orderModel.paytype.intValue == 2)
     {
         [lbother setText:@"微信"];
+    }
+    else if(orderModel.paytype.intValue == 3)
+    {
+        [lbother setText:@"余额"];
     }
     
     [lbother setTextColor:RGB(153,153,153)];

@@ -634,15 +634,15 @@
     webview = [[MDBwebVIew alloc] init];
     webview.delegate = self;
     [view addSubview:webview];
-    [webview setBackgroundColor:RGB(126, 112, 215)];
-    [webview.webView setBackgroundColor:RGB(126, 112, 215)];
+    [webview setBackgroundColor:[UIColor clearColor]];
+    [webview.webView setBackgroundColor:[UIColor clearColor]];
     [webview mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(view);
         make.top.equalTo(imgvline.mas_bottom).offset(15);
         make.height.offset(10);
     }];
 //    [webview loadWebByURL:@"https://www.baidu.com/"];
-    [webview refreshHtml:[NSString stringWithFormat:@"%@",[NSString nullToString:[dataControl.dicresult objectForKey:@"rule_description"]]]];
+    [webview refreshYQHYGZHtml:[NSString stringWithFormat:@"%@",[NSString nullToString:[dataControl.dicresult objectForKey:@"rule_description"]]]];
     [view mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(webview.mas_bottom);
     }];

@@ -38,6 +38,9 @@
 -(void)finalyLoadWKWebView;
 
 - (void)refreshHtml:(NSString *)description;
+
+////白色子图
+- (void)refreshYQHYGZHtml:(NSString *)description;
 // 请求网页
 - (void)loadWebByURL:(NSString *)paramUrl;
 

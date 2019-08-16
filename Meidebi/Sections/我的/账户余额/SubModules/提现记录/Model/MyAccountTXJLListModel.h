@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic , retain) NSString *status_text;
 
+@property (nonatomic , retain) NSString *tixian_month;
+
 @property (nonatomic , retain) NSString *tixian_time;
 
 -(void)modelValue:(NSDictionary *)dicvalue;

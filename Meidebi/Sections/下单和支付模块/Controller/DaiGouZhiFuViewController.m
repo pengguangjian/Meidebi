@@ -26,8 +26,11 @@
 
 #import "MyAccountDataController.h"
 
+#import "MDBPayAlterView.h"
 
-@interface DaiGouZhiFuViewController ()
+#import "PayPassWordViewController.h"
+
+@interface DaiGouZhiFuViewController ()<MDBPayAlterViewDelegate,UIAlertViewDelegate>
 {
     
     UIScrollView *scvback;
@@ -284,19 +287,138 @@
     if(btnowselect.tag == 0)
     {
         dicpush = @{@"orderNos":strordernos,@"paytype":@"alipay",@"userkey":[NSString nullToString:[MDB_UserDefault defaultInstance].usertoken]};
+        [self payHttpAction:dicpush];
+        
     }
     else if(btnowselect.tag == 1)
     {
         
         dicpush = @{@"orderNos":strordernos,@"paytype":@"weixinpay_app",@"userkey":[NSString nullToString:[MDB_UserDefault defaultInstance].usertoken]};
-        
+        [self payHttpAction:dicpush];
     }
     else if(btnowselect.tag == 2)
     {
+        if([[MDB_UserDefault defaultInstance] is_set_pay_password]==NO)
+        {
+            UIAlertView *alter = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请设置支付密码" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            [alter show];
+            return;
+        }
         
+        if(fyuemoney<_strprice.floatValue)
+        {
+            [MDB_UserDefault showNotifyHUDwithtext:@"您的余额不足" inView:self.view];
+            return;
+        }
+        MDBPayAlterView *alter = [[MDBPayAlterView alloc] init];
+        alter.strPrice = _strprice;
+        [alter setDelegate:self];
+        [alter alterShow:self.view.window type:0 andfv:0];
+    }
+}
+
+#pragma mark -
+///取消
+-(void)cancleAction
+{
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex==1)
+    {
+        PayPassWordViewController *pvc = [[PayPassWordViewController alloc] init];
+        [self.navigationController pushViewController:pvc animated:YES];
+    }
+}
+///输入完成
+-(void)passAllCode:(NSString *)strvalue
+{
+    
+    NSDictionary *dicpush;
+    
+    NSString *strordernos = @"";
+    if(_arrordernumbers.count>0)
+    {
+        strordernos = [_arrordernumbers componentsJoinedByString:@","];
+    }
+    else
+    {
+        strordernos = _strorderid;
+    }
+    
+    if(strordernos==nil)
+    {
+        [MDB_UserDefault showNotifyHUDwithtext:@"订单号错误" inView:self.view];
         return;
     }
+    
+    dicpush = @{@"order_nos":strordernos,@"userkey":[NSString nullToString:[MDB_UserDefault defaultInstance].usertoken],@"pay_password":strvalue};
+    
+    [self payYEHttpAction:dicpush];
+    
+}
 
+////余额支付
+-(void)payYEHttpAction:(NSDictionary *)dicpush
+{
+    [HTTPManager sendRequestUrlToService:URL_Daigoupayment_Balancepay withParametersDictionry:dicpush view:self.view completeHandle:^(NSURLSessionTask *opration, id responceObjct, NSError *error) {
+       
+        NSString *describle = @"";
+        if (responceObjct==nil) {
+            describle = @"网络错误";
+        }else{
+            NSString *str=[[NSString alloc]initWithData:responceObjct encoding:NSUTF8StringEncoding];
+            NSDictionary *dicAll=[str JSONValue];
+            describle = dicAll[@"info"];
+            if ([[NSString nullToString:dicAll[@"status"]] intValue] == 1) {
+                NSString *strordernos = @"";
+                if(_arrordernumbers.count>0)
+                {
+                    strordernos = [_arrordernumbers componentsJoinedByString:@","];
+                }
+                else
+                {
+                    strordernos = _strorderid;
+                }
+                
+                PaySuccessViewController *pvc = [[PaySuccessViewController alloc] init];
+                pvc.strgoodsid = _strgoodsid;
+                pvc.strdid = _strdid;
+                pvc.strorderno = strordernos;
+                if(_arrordernumbers.count>1)
+                {
+                    pvc.ismoreorders = YES;
+                }
+                [self.navigationController pushViewController:pvc animated:YES];
+            }
+            else
+            {
+                [MDB_UserDefault showNotifyHUDwithtext:describle inView:self.view];
+                /*
+                 if(_arrordernumbers.count>1)
+                 {
+                 MyOrderMainViewController *mvc = [[MyOrderMainViewController alloc]init];
+                 [self.navigationController pushViewController:mvc animated:YES];
+                 }
+                 else
+                 {
+                 OrderDetaileViewController *ovc = [[OrderDetaileViewController alloc] init];
+                 ovc.strid = _strdid;
+                 ovc.strorderno = strordernos;
+                 [self.navigationController pushViewController:ovc animated:YES];
+                 }
+                 */
+            }
+        }
+    }];
+}
+
+
+////微信和支付宝支付获取签名
+-(void)payHttpAction:(NSDictionary *)dicpush
+{
     [HTTPManager sendGETRequestUrlToService:MyOrderZhiFuViewUrl withParametersDictionry:dicpush view:self.view completeHandle:^(NSURLSessionTask *opration, id responceObjct, NSError *error) {
         NSString *describle = @"";
         if (responceObjct==nil) {
@@ -324,11 +446,7 @@
                     
                     [self weixinPay:[dicAll objectForKey:@"data"]];
                 }
-                else if(btnowselect.tag == 2)
-                {///余额支付
-                    
-                }
-
+                
             }
             else
             {
@@ -336,12 +454,6 @@
             }
         }
     }];
-//    [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
-//        NSLog(@"reslut = %@",resultDic);
-//    }];
-//    PaySuccessViewController *pvc = [[PaySuccessViewController alloc] init];
-//    [self.navigationController pushViewController:pvc animated:YES];
-    
 }
 
 #pragma mark - 微信支付

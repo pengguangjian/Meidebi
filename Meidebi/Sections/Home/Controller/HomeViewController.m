@@ -431,6 +431,31 @@ Home644ViewDelegate
             [[NSNotificationCenter defaultCenter] postNotificationName:@"tabbarnumessagenum" object:[NSString nullToString:[NSString stringWithFormat:@"%d",itemo]]];
             
             
+            /////
+            @try {
+                [[MDB_UserDefault defaultInstance] setisSignyes:
+                 [NSString stringWithFormat:@"%@",[self.dataController.resultDict objectForKey:@"isSign"]] coper:
+                 [NSString stringWithFormat:@"%@",[self.dataController.resultDict objectForKey:@"copper"]] name:
+                 [NSString stringWithFormat:@"%@",[self.dataController.resultDict objectForKey:@"name"]] nickName:
+                 [NSString stringWithFormat:@"%@",[self.dataController.resultDict objectForKey:@"nickname"]] coin:
+                 [NSString stringWithFormat:@"%@",[self.dataController.resultDict objectForKey:@"coins"]] fans:
+                 [NSString stringWithFormat:@"%@",[self.dataController.resultDict objectForKey:@"fansNum"]] follow:
+                 [NSString stringWithFormat:@"%@",[self.dataController.resultDict objectForKey:@"followNum"]] contribution:
+                 [NSString stringWithFormat:@"%@",[self.dataController.resultDict objectForKey:@"contribution"]] content:nil userPhoto:
+                 [self.dataController.resultDict objectForKey:@"headImgUrl"] userID:
+                 [self.dataController.resultDict objectForKey:@"userid"] balance:
+                 [self.dataController.resultDict objectForKey:@"balance"] commission_balance:
+                 [self.dataController.resultDict objectForKey:@"reward_balance"] goods_coupon_balance:
+                 [self.dataController.resultDict objectForKey:@"goods_coupon_balance"] is_set_pay_password:
+                 [[self.dataController.resultDict objectForKey:@"is_set_pay_password"] boolValue]];
+            } @catch (NSException *exception) {
+                
+            } @finally {
+                
+            }
+            
+            //////
+            
             
 //            NSString *strnum = [NSString nullToString:[self.dataController.resultDict objectForKey:@"commentnum"]];
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"tabbarnumessagenum" object:strnum];

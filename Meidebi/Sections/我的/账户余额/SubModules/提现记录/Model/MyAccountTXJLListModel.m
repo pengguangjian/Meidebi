@@ -43,7 +43,7 @@
     self.money = [NSString nullToString:[dicvalue objectForKey:@"money"]];
     self.tixian_time = [NSString nullToString:[dicvalue objectForKey:@"tixian_time"]];
     self.status_text = [NSString nullToString:[dicvalue objectForKey:@"status_text"]];
-    
+    self.tixian_month = [NSString nullToString:[dicvalue objectForKey:@"tixian_month"]];
 }
 
 @end

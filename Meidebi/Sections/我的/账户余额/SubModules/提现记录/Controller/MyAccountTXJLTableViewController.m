@@ -23,6 +23,9 @@
     NSMutableArray *arrdata;
     
     MyAccountTXJLDataController *dataControl;
+    
+    NSString *strlastmouth;
+    
 }
 
 @property (nonatomic, strong) MDBEmptyView *emptyView;
@@ -44,9 +47,11 @@
     [super viewDidLoad];
     self.title = @"提现记录";
     ipage = 1;
+    strlastmouth = @"";
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         ipage = 1;
+        strlastmouth = @"";
         [self loadData];
     }];
     self.tableView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
@@ -81,13 +86,80 @@
         }
         if(state)
         {
+            
+            NSMutableArray *arrtxListModel = [NSMutableArray new];
+            ///MyAccountTXJLListModel
             for(NSDictionary *dictemp in dataControl.arrresult)
             {
-                MyAccountTXJLListModel *model  = [MyAccountTXJLListModel new];
+                MyAccountTXJLModel *model  = [MyAccountTXJLModel new];
                 [model modelValue:dictemp];
-                [arrdata addObject:model];
+                if([strlastmouth isEqualToString:@""])
+                {
+                    strlastmouth = model.tixian_month;
+                }
+                
+                if(![model.tixian_month isEqualToString:strlastmouth] && ![strlastmouth isEqualToString:@""])
+                {
+                    BOOL islastedit = NO;
+                    if(arrdata.count>0)
+                    {
+                        MyAccountTXJLListModel *modeltemp = arrdata.lastObject;
+                        if([modeltemp.strtime isEqualToString:strlastmouth])
+                        {
+                            [modeltemp.arrmodel addObjectsFromArray:arrtxListModel];
+                        }
+                        else
+                        {
+                            islastedit = YES;
+                        }
+                    }
+                    else
+                    {
+                        islastedit = YES;
+                    }
+                    if(islastedit)
+                    {
+                        MyAccountTXJLListModel *model0 = [MyAccountTXJLListModel new];
+                        model0.strtime = strlastmouth;
+                        model0.arrmodel = arrtxListModel;
+                        [arrdata addObject:model0];
+                    }
+                    
+                    arrtxListModel = [NSMutableArray new];
+                    strlastmouth = model.tixian_month;
+                    
+                }
+                [arrtxListModel addObject:model];
+                
             }
-            
+            if(arrtxListModel.count>0)
+            {
+                
+                BOOL islastedit = NO;
+                if(arrdata.count>0)
+                {
+                    MyAccountTXJLListModel *modeltemp = arrdata.lastObject;
+                    if([modeltemp.strtime isEqualToString:strlastmouth])
+                    {
+                        [modeltemp.arrmodel addObjectsFromArray:arrtxListModel];
+                    }
+                    else
+                    {
+                        islastedit = YES;
+                    }
+                }
+                else
+                {
+                    islastedit = YES;
+                }
+                if(islastedit)
+                {
+                    MyAccountTXJLListModel *model0 = [MyAccountTXJLListModel new];
+                    model0.strtime = strlastmouth;
+                    model0.arrmodel = arrtxListModel;
+                    [arrdata addObject:model0];
+                }
+            }
         }
         
         [self.tableView reloadData];

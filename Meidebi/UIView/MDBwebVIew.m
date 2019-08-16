@@ -87,6 +87,20 @@
     
 }
 
+- (void)refreshYQHYGZHtml:(NSString *)description{
+    if(isfinallied)return;
+    _webView.frame = CGRectMake(0, 0, self.frame.size.width, 1);
+    NSString *str_bigfont=[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"bigfont" ofType:@"txt"] encoding:NSUTF8StringEncoding error:nil];
+    
+    NSString *headerString = @"<header><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'></header>";
+    
+    NSString *description_bigfont=[NSString stringWithFormat:@"<html>%@<div style='color:#FFFFFF'>%@</div></html>",str_bigfont,description];
+    
+    description_bigfont = [headerString stringByAppendingString:description_bigfont];
+    [_webView loadHTMLString:description_bigfont baseURL:nil];
+    
+}
+
 // 请求网页
 - (void)loadWebByURL:(NSString *)paramUrl{
     if(isfinallied)return;
